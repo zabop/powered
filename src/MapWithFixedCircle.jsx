@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 
 // Use your Mapbox access token
 mapboxgl.accessToken =
@@ -13,10 +14,26 @@ const MapWithFixedCircle = () => {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/satellite-v9", // Satellite view for the main map
+      style: "mapbox://styles/mapbox/satellite-streets-v12", // Satellite view for the main map
       center: [0, 0],
       zoom: 2,
       attributionControl: false,
+    });
+
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        line_string: true, // Switch to line tool
+        trash: true,
+      },
+      defaultMode: "draw_line_string", // Use line tool as default
+    });
+    map.addControl(draw);
+
+    map.getCanvas().addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault(); // Prevent default Esc behavior (exit drawing mode)
+      }
     });
 
     const overlayCanvas = canvasRef.current;
@@ -30,7 +47,7 @@ const MapWithFixedCircle = () => {
 
     const fixedCircleMap = new mapboxgl.Map({
       container: document.createElement("div"), // Hidden container for the fixed map
-      style: "mapbox://styles/mapbox/satellite-v9", // Satellite view for the fixed circle map
+      style: "mapbox://styles/mapbox/satellite-streets-v12", // Satellite view for the fixed circle map
       center: [0, 0],
       zoom: 5,
       interactive: false,
@@ -45,6 +62,7 @@ const MapWithFixedCircle = () => {
       strokeColor = "red",
       fillColor = "rgba(0, 0, 0, 0.4)"
     ) => {
+      // Draw the circle
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, 2 * Math.PI);
       ctx.fillStyle = fillColor;
