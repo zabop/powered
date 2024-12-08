@@ -46,6 +46,19 @@ const Maps = () => {
     });
     map.addControl(draw);
 
+    // Listen for the `draw.create` event and log coordinates of the finished line
+    map.on("draw.create", (e) => {
+      const { features } = e;
+      features.forEach((feature) => {
+        if (feature.geometry.type === "LineString") {
+          console.log(
+            "Coordinates of the finished line:",
+            feature.geometry.coordinates
+          );
+        }
+      });
+    });
+
     return () => {
       map.remove();
       fixedCircleMap.remove();
