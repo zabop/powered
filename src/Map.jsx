@@ -4,7 +4,7 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
-const MapboxExample = () => {
+const Map = () => {
   const mapContainerRef = useRef();
   const mapRef = useRef();
 
@@ -29,6 +29,35 @@ const MapboxExample = () => {
         trash: true, // Enable the delete tool
       },
       defaultMode: "draw_line_string", // Start in line drawing mode
+      styles: [
+        {
+          id: "line",
+          type: "line",
+          filter: ["==", "$type", "LineString"],
+          paint: {
+            "line-color": "#FF0000",
+            "line-width": 4,
+          },
+        },
+        {
+          id: "points",
+          type: "circle",
+          filter: ["==", "$type", "Point"],
+          paint: {
+            "circle-radius": 6,
+            "circle-color": "#00FF00",
+          },
+        },
+        {
+          id: "vertices",
+          type: "circle",
+          filter: ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"]],
+          paint: {
+            "circle-radius": 10,
+            "circle-color": "#FFF",
+          },
+        },
+      ],
     });
     mapRef.current.addControl(draw);
 
@@ -47,4 +76,4 @@ const MapboxExample = () => {
   return <div ref={mapContainerRef} id="map" style={{ height: "100%" }}></div>;
 };
 
-export default MapboxExample;
+export default Map;
