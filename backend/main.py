@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from requests_oauthlib import OAuth2Session
+from fastapi.responses import JSONResponse
 from oauthcli import OpenStreetMapAuth
 import xml.etree.ElementTree as ET
 from pydantic import BaseModel
@@ -14,6 +15,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_methods=["POST"],
+    allow_credentials=True,
+    allow_headers=["*"],
 )
 
 
@@ -42,4 +45,4 @@ async def mark_nodes_as(request: Request):
         "changeset_count": changesets_elem.attrib.get("count"),
     }
 
-    return response_data
+    return JSONResponse(response_data)
