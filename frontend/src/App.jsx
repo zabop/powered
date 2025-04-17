@@ -64,20 +64,18 @@ export default function App() {
 
     auth.xhr(
       {
-        method: "POST",
-        path: "https://backend-sparkling-wave-2107.fly.dev/mark_nodes_as",
+        method: "GET",
+        path: `http://0.0.0.0:8080/mark_nodes_as?wayId=${wayId}`,
         prefix: false,
         options: {
           headers: {
-            "Content-Type": "application/json",
+            Accept: "application/json",
           },
-          body: JSON.stringify({ wayId: wayId }),
         },
       },
       (err, res) => {
         console.log("res:", res);
         console.log("err:", err);
-        const data = res.responseText;
         setResp(res);
       }
     );
