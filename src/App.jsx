@@ -10,8 +10,8 @@ const auth = window.osmAuth.osmAuth({
 export default function App() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
+  const [wayId, setWayId] = useState("");
 
-  // Function to fetch user details using the auth.xhr method provided by osmAuth
   function fetchUserDetails() {
     auth.xhr({ method: "GET", path: "/api/0.6/user/details" }, (err, res) => {
       if (err) {
@@ -31,7 +31,6 @@ export default function App() {
     });
   }
 
-  // Process auth on component mount if the URL has the authorization code.
   useEffect(() => {
     if (
       window.location.search.includes("code=") &&
@@ -40,12 +39,11 @@ export default function App() {
       !error
     ) {
       auth.authenticate(() => {
-        // Remove the auth code from the URL for a cleaner history entry.
         window.history.pushState({}, null, window.location.pathname);
         fetchUserDetails();
       });
     }
-  }, []); // Run on mount only
+  }, []);
 
   function handleLogin() {
     auth.authenticate(() => fetchUserDetails());
@@ -57,14 +55,29 @@ export default function App() {
     setError("");
   }
 
+  function handleWayIdSubmit() {
+    console.log("Submitted Way ID:", wayId);
+    // logic to process Way ID here
+  }
+
   return (
-    <div>
+    <>
       <button onClick={handleLogin}>Login</button>
       <button onClick={handleLogout}>Logout</button>
 
       {error && <> {error} </>}
-
       {user && <> Authenticated: {user.name} </>}
-    </div>
+
+      <div>
+        <label for="wayId">Mark all nodes of this way ID as power poles:</label>
+        <input
+          id="wayId"
+          type="number"
+          value={wayId}
+          onChange={(e) => setWayId(e.target.value)}
+        />
+        <button onClick={handleWayIdSubmit}>Submit</button>
+      </div>
+    </>
   );
 }
