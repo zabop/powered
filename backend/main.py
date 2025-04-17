@@ -12,7 +12,7 @@ origins = ["https://zabop.github.io"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_methods=["GET"],
+    allow_methods=["*"],
     allow_credentials=True,
     allow_headers=["*"],
 )
