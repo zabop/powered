@@ -1,6 +1,6 @@
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from requests_oauthlib import OAuth2Session
-from fastapi import FastAPI, HTTPException
 from oauthcli import OpenStreetMapAuth
 import xml.etree.ElementTree as ET
 from pydantic import BaseModel
@@ -17,36 +17,29 @@ app.add_middleware(
 )
 
 
-class TokenRequest(BaseModel):
-    access_token: str
-
-
 @app.post("/mark_nodes_as")
-async def mark_nodes_as(token_request: TokenRequest):
-    try:
+async def mark_nodes_as(request: Request):
 
-        token = {
-            "access_token": token_request.access_token,
-            "token_type": "Bearer",
-            "scope": ["write_api", "read_prefs"],
-        }
+    auth_header = request.headers.get("Authorization")
+    token = {
+        "access_token": auth_header.replace("Bearer ", ""),
+        "token_type": "Bearer",
+        "scope": ["write_api", "read_prefs"],
+    }
 
-        oauth_session = OAuth2Session(token=token)
-        api = osmapi.OsmApi(api="https://api.openstreetmap.org", session=oauth_session)
+    oauth_session = OAuth2Session(token=token)
+    api = osmapi.OsmApi(api="https://api.openstreetmap.org", session=oauth_session)
 
-        resp = oauth_session.get("https://api.openstreetmap.org/api/0.6/user/details")
+    resp = oauth_session.get("https://api.openstreetmap.org/api/0.6/user/details")
 
-        root = ET.fromstring(resp.content)
-        user_elem = root.find("user")
-        changesets_elem = root.find(".//changesets")
+    root = ET.fromstring(resp.content)
+    user_elem = root.find("user")
+    changesets_elem = root.find(".//changesets")
 
-        response_data = {
-            "display_name": user_elem.attrib.get("display_name"),
-            "account_created": user_elem.attrib.get("account_created"),
-            "changeset_count": changesets_elem.attrib.get("count"),
-        }
+    response_data = {
+        "display_name": user_elem.attrib.get("display_name"),
+        "account_created": user_elem.attrib.get("account_created"),
+        "changeset_count": changesets_elem.attrib.get("count"),
+    }
 
-        return response_data
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return response_data
