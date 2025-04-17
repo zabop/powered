@@ -38,12 +38,12 @@ async def mark_nodes_as(request: Request, wayId: str = Query(...)):
     changesets_elem = root.find(".//changesets")
 
     try:
-        # with api.Changeset({"comment": "mark nodes as power poles"}) as changeset:
-        #     w = api.WayGet(int(wayId))
-        #     for nodeId in w["nd"]:
-        #         node = api.NodeGet(nodeId)
-        #         node["tag"]["power"] = "pole"
-        #         api.NodeUpdate(node)
+        with api.Changeset({"comment": "mark nodes as power poles"}) as changeset:
+            w = api.WayGet(int(wayId))
+            for nodeId in w["nd"]:
+                node = api.NodeGet(nodeId)
+                node["tag"]["power"] = "pole"
+                api.NodeUpdate(node)
         resp = f"Marked all nodes of osm.org/way/{wayId} as power=pole"
     except Exception as e:
         resp = e
