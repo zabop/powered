@@ -49,7 +49,7 @@ async def mark_nodes_as(request: Request, wayId: str = Query(...)):
                     api.NodeUpdate(node)
             resp = f"Marked all nodes of osm.org/way/{wayId} as power=pole"
         else:
-            resp = "You are not on the whitelist to use this tool. You are more than welcome to be added to it, this is only a safeguard. Email zabop.github.io.subsystem611@passmail.com or add a PR: https://github.com/zabop/powered."
+            resp = "You need to be added to a whitelist to make edits from this page. Email zabop.github.io.subsystem611@passmail.com or add a PR here: https://github.com/zabop/powered/blob/master/backend/main.py#L11. If used without care, one can easily cause large scale damage using this site, hence the whitelist. If you are going to be careful, it'll be a pleasure to add you to the whitelist & see your contributions, so go ahead, email or PR!"
     except Exception as e:
         resp = e
 
