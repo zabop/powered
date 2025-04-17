@@ -1,35 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const auth = window.osmAuth.osmAuth({
+  client_id: "Qk9MOLiU_jxEbWiiwOL-g6g1b9jY3J2cF4k25NmCWQI",
+  scope: "read_prefs",
+  redirect_uri: `${window.location.origin}/powered/land.html`,
+  singlepage: false,
+});
+
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
+
+  // Function to fetch user details using the auth.xhr method provided by osmAuth
+  function fetchUserDetails() {
+    auth.xhr({ method: "GET", path: "/api/0.6/user/details" }, (err, res) => {
+      if (err) {
+        setError("Failed to fetch user details");
+        return;
+      }
+
+      const userEl = res.getElementsByTagName("user")[0];
+      const changesets = res.getElementsByTagName("changesets")[0];
+
+      setUser({
+        name: userEl.getAttribute("display_name"),
+        id: userEl.getAttribute("id"),
+        count: changesets.getAttribute("count"),
+      });
+      setError("");
+    });
+  }
+
+  // Process auth on component mount if the URL has the authorization code.
+  useEffect(() => {
+    if (
+      window.location.search.includes("code=") &&
+      !auth.authenticated() &&
+      !user &&
+      !error
+    ) {
+      auth.authenticate(() => {
+        // Remove the auth code from the URL for a cleaner history entry.
+        window.history.pushState({}, null, window.location.pathname);
+        fetchUserDetails();
+      });
+    }
+  }, []); // Run on mount only
+
+  function handleLogin() {
+    auth.authenticate(() => fetchUserDetails());
+  }
+
+  function handleLogout() {
+    auth.logout();
+    setUser(null);
+    setError("");
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogout}>Logout</button>
 
-export default App
+      {error && <> {error} </>}
+
+      {user && <> Authenticated: {user.name} </>}
+    </div>
+  );
+}
