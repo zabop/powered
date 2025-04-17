@@ -56,8 +56,29 @@ export default function App() {
   }
 
   function handleWayIdSubmit() {
-    console.log("Submitted Way ID:", wayId);
-    // logic to process Way ID here
+    if (!auth.authenticated()) {
+      setError("You must be logged in to submit.");
+      return;
+    }
+
+    auth.xhr(
+      {
+        method: "POST",
+        path: "https://backend-sparkling-wave-2107.fly.dev/mark_nodes_as",
+        prefix: false,
+        options: {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
+        },
+      },
+      (err, res) => {
+        console.log("res:", res);
+        console.log("err:", err);
+        const data = res.responseText;
+      }
+    );
   }
 
   return (
