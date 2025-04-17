@@ -65,7 +65,7 @@ export default function App() {
     auth.xhr(
       {
         method: "GET",
-        path: `https://fly.io/apps/backend-sparkling-wave-2107/mark_nodes_as?wayId=${wayId}`, // https://fly.io/dashboard/powered
+        path: `https://backend-sparkling-wave-2107.fly.dev/mark_nodes_as?wayId=${wayId}`, // https://fly.io/dashboard/powered
         prefix: false,
         options: {
           headers: {
