@@ -1,5 +1,5 @@
 # based on: https://vite.dev/guide/static-deploy
-name: Deploy
+name: GitHub pages
 
 on:
   push:
