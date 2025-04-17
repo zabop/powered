@@ -67,6 +67,7 @@ export default function App() {
         method: "GET",
         path: `https://backend-sparkling-wave-2107.fly.dev/mark_nodes_as?wayId=${wayId}`, // https://fly.io/dashboard/powered
         // path: `http://0.0.0.0:8080/mark_nodes_as?wayId=${wayId}`,
+        prefix: false,
         options: {
           headers: {
             Accept: "application/json",
