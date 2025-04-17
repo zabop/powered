@@ -69,7 +69,9 @@ export default function App() {
       {user ? <> Authenticated: {user.name}</> : <> Not logged in. </>}
 
       <div>
-        <label for="wayId">Mark all nodes of this way ID as power poles:</label>
+        <label htmlFor="wayId">
+          Mark all nodes of this way ID as power poles:
+        </label>
         <input
           id="wayId"
           type="number"
