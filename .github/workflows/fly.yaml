@@ -1,6 +1,6 @@
 # See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
 
-name: Deploy to fly.io
+name: fly.io deploy
 on:
   push:
     branches:
