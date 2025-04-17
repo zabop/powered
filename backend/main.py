@@ -8,6 +8,7 @@ import osmapi
 app = FastAPI()
 
 origins = ["https://zabop.github.io", "http://127.0.0.1:5173"]
+user_whitelist = ["zabop"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,23 +29,27 @@ async def mark_nodes_as(request: Request, wayId: str = Query(...)):
         "scope": ["write_api", "read_prefs"],
     }
 
-    oauth_session = OAuth2Session(token=token)
-    api = osmapi.OsmApi(api="https://api.openstreetmap.org", session=oauth_session)
-
-    resp = oauth_session.get("https://api.openstreetmap.org/api/0.6/user/details")
-
-    root = ET.fromstring(resp.content)
-    user_elem = root.find("user")
-    changesets_elem = root.find(".//changesets")
-
     try:
-        with api.Changeset({"comment": "mark nodes as power poles"}) as changeset:
-            w = api.WayGet(int(wayId))
-            for nodeId in w["nd"]:
-                node = api.NodeGet(nodeId)
-                node["tag"]["power"] = "pole"
-                api.NodeUpdate(node)
-        resp = f"Marked all nodes of osm.org/way/{wayId} as power=pole"
+
+        oauth_session = OAuth2Session(token=token)
+        api = osmapi.OsmApi(api="https://api.openstreetmap.org", session=oauth_session)
+
+        resp = oauth_session.get("https://api.openstreetmap.org/api/0.6/user/details")
+
+        root = ET.fromstring(resp.content)
+        user = root.find("user")
+        changesets_elem = root.find(".//changesets")
+
+        if user in user_whitelist:
+            with api.Changeset({"comment": "mark nodes as power poles"}) as changeset:
+                w = api.WayGet(int(wayId))
+                for nodeId in w["nd"]:
+                    node = api.NodeGet(nodeId)
+                    node["tag"]["power"] = "pole"
+                    api.NodeUpdate(node)
+            resp = f"Marked all nodes of osm.org/way/{wayId} as power=pole"
+        else:
+            resp = "You are not on the whitelist to use this tool. You are more than welcome to be added to it, this is only a safeguard. Email zabop.github.io.subsystem611@passmail.com or add a PR: https://github.com/zabop/powered."
     except Exception as e:
         resp = e
 
