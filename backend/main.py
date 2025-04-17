@@ -1,10 +1,8 @@
-from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request, Query
 from requests_oauthlib import OAuth2Session
 from fastapi.responses import JSONResponse
-from oauthcli import OpenStreetMapAuth
 import xml.etree.ElementTree as ET
-from pydantic import BaseModel
 import osmapi
 
 app = FastAPI()
@@ -14,14 +12,14 @@ origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_methods=["POST"],
+    allow_methods=["GET"],
     allow_credentials=True,
     allow_headers=["*"],
 )
 
 
-@app.post("/mark_nodes_as")
-async def mark_nodes_as(request: Request):
+@app.get("/mark_nodes_as")
+async def mark_nodes_as(request: Request, wayId: str = Query(...)):
 
     auth_header = request.headers.get("Authorization")
     token = {
@@ -43,6 +41,14 @@ async def mark_nodes_as(request: Request):
         "display_name": user_elem.attrib.get("display_name"),
         "account_created": user_elem.attrib.get("account_created"),
         "changeset_count": changesets_elem.attrib.get("count"),
+        "wayId": wayId,
     }
+
+    # with api.Changeset({"comment": "mark nodes as power poles"}) as changeset:
+    #     w = api.WayGet(1377580691)
+    #     for nodeId in w["nd"]:
+    #         node = api.NodeGet(nodeId)
+    #         node["tag"]["power"] = "pole"
+    #         api.NodeUpdate(node)
 
     return JSONResponse(response_data)
