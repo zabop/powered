@@ -87,7 +87,7 @@ export default function App() {
       <button onClick={handleLogout}>Logout</button>
 
       {error && <> {error} </>}
-      {user ? <> Authenticated: {user.name}</> : <> Not logged in. </>}
+      {user && <> Authenticated: {user.name}</>}
 
       <div>
         <label htmlFor="wayId">
