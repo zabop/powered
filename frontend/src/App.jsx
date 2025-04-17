@@ -11,6 +11,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [wayId, setWayId] = useState("");
+  const [resp, setResp] = useState("");
 
   function fetchUserDetails() {
     auth.xhr({ method: "GET", path: "/api/0.6/user/details" }, (err, res) => {
@@ -77,6 +78,7 @@ export default function App() {
         console.log("res:", res);
         console.log("err:", err);
         const data = res.responseText;
+        setResp(res);
       }
     );
   }
@@ -101,6 +103,8 @@ export default function App() {
         />
         <button onClick={handleWayIdSubmit}>Submit</button>
       </div>
+
+      <div>{resp}</div>
     </>
   );
 }
