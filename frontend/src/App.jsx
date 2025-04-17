@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 const auth = window.osmAuth.osmAuth({
-  client_id: "Qk9MOLiU_jxEbWiiwOL-g6g1b9jY3J2cF4k25NmCWQI",
-  scope: "read_prefs",
+  client_id: "OzEEGgyYM2RSU4sZtucfdT9URz3IM17MFH8i3fJ8aa0",
+  scope: "read_prefs write_api",
   redirect_uri: `${window.location.origin}/powered/land.html`,
   singlepage: false,
 });
