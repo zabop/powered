@@ -7,7 +7,7 @@ import osmapi
 
 app = FastAPI()
 
-origins = ["https://zabop.github.io"]
+origins = ["https://zabop.github.io", "http://127.0.0.1:5173"]
 
 app.add_middleware(
     CORSMiddleware,
