@@ -6,8 +6,4 @@ Run via:
 
 On GitHub pages: https://zabop.github.io/powered/.
 
-Settings on openstreetmap.org:
-
-![](https://i.imgur.com/r1YPlAn.png)
-
-Use space to separate URLs, not a comma.
+Authentication is based on: https://github.com/zabop/osm-react-auth.
