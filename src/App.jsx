@@ -66,7 +66,7 @@ export default function App() {
       <button onClick={handleLogout}>Logout</button>
 
       {error && <> {error} </>}
-      {user && <> Authenticated: {user.name} </>}
+      {user ? <> Authenticated: {user.name}</> : <> Not logged in. </>}
 
       <div>
         <label for="wayId">Mark all nodes of this way ID as power poles:</label>
