@@ -37,7 +37,7 @@ async def mark_nodes_as(request: Request, wayId: str = Query(...)):
         resp = oauth_session.get("https://api.openstreetmap.org/api/0.6/user/details")
 
         root = ET.fromstring(resp.content)
-        user = root.find("user")
+        user = root.find("user").attrib["display_name"]
         changesets_elem = root.find(".//changesets")
 
         if user in user_whitelist:
