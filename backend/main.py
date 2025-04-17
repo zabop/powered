@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from requests_oauthlib import OAuth2Session
 from fastapi import FastAPI, HTTPException
 from oauthcli import OpenStreetMapAuth
@@ -6,6 +7,14 @@ from pydantic import BaseModel
 import osmapi
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_methods=["POST"],
+)
 
 
 class TokenRequest(BaseModel):
